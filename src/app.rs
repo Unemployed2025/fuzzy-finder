@@ -30,6 +30,8 @@ pub struct AppState {
     pub search_cache: HashMap<String, Vec<FileEntry>>,
     pub input_changed: bool,
     pub list_state: ListState,
+    pub preview_content: String,
+    pub file_type_filter: Option<String>,
 }
 
 impl AppState {
@@ -44,6 +46,8 @@ impl AppState {
             search_cache: HashMap::new(),
             input_changed: true, // Set to true to trigger initial search
             list_state: ListState::default(),
+            preview_content: String::new(),
+            file_type_filter: None,
         }));
 
         let app_clone = Arc::clone(&app_state);
@@ -98,6 +102,16 @@ impl AppState {
             .collect()
     }
 
+    pub fn update_preview(&mut self) {
+        if let Some(path) = self.get_selected_path() {
+            let content = std::fs::read_to_string(path)
+                .unwrap_or_else(|_| "Failed to read file".to_string());
+            self.preview_content = content.chars().take(1000).collect();
+        } else {
+            self.preview_content.clear();
+        }
+    }
+
     pub fn update_matches(&mut self) {
         if self.input.is_empty() {
             self.matches = self.all_files.iter().take(MAX_RESULTS).cloned().collect();
@@ -112,9 +126,14 @@ impl AppState {
         }
 
         let input_lower = self.input.to_lowercase();
+        let file_type = self.file_type_filter.clone();
         let mut scored_matches: Vec<FileEntry> = self
             .all_files
-            .iter() // Using standard iterator for simplicity
+            .iter()
+            .filter(|entry| match &file_type {
+                Some(ext) => entry.path.ends_with(ext),
+                None => true,
+            })
             .filter_map(|file| {
                 let score = calculate_fuzzy_score(&file.filename.to_lowercase(), &input_lower);
                 if score > 0 {
@@ -141,6 +160,7 @@ impl AppState {
 
         self.matches = scored_matches;
         self.selected = 0;
+        self.update_preview();
     }
 
     pub fn should_update(&self) -> bool {
@@ -161,12 +181,14 @@ impl AppState {
         if self.selected > 0 {
             self.selected -= 1;
         }
+        self.update_preview();
     }
 
     pub fn move_down(&mut self) {
         if !self.matches.is_empty() && self.selected + 1 < self.matches.len() {
             self.selected += 1;
         }
+        self.update_preview();
     }
 
     pub fn get_selected_path(&self) -> Option<&str> {

@@ -19,8 +19,7 @@ pub fn render_ui(f: &mut Frame, app: &mut AppState) {
         ])
         .split(f.size());
 
-    // Assign each chunk explicitly
-    let (search_chunk, loading_chunk, results_chunk, _status_chunk) =
+    let (search_chunk, loading_chunk, main_body_chunk, _status_chunk) = 
         (chunks[0], chunks[1], chunks[2], chunks[3]);
 
     // Render search input
@@ -51,6 +50,16 @@ pub fn render_ui(f: &mut Frame, app: &mut AppState) {
             .alignment(Alignment::Center);
         f.render_widget(loading, loading_chunk);
     }
+
+    let main_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        .split(main_body_chunk);
+
+    let (results_chunk, preview_chunk) = (main_chunks[0], main_chunks[1]);
 
     // Build results list
     let items: Vec<ListItem> = app
@@ -87,6 +96,12 @@ pub fn render_ui(f: &mut Frame, app: &mut AppState) {
     // Update selection in list_state
     app.list_state.select(Some(app.selected));
     f.render_stateful_widget(list, results_chunk, &mut app.list_state);
+
+    // Render file preview
+    let preview = Paragraph::new(app.preview_content.clone())
+        .style(Style::default().fg(Color::White))
+        .block(Block::default().title("Preview").borders(Borders::ALL));
+    f.render_widget(preview, preview_chunk);
 
     // Render status bar
     let status = if app.loading {

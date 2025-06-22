@@ -117,9 +117,9 @@ cargo add ratatui crossterm regex walkdir rayon dirs
 - [x] Basic fuzzy search
 - [x] TUI interface
 - [x] File opener
-- [ ] File type filters
+- [x] File preview panel
+- [x] File type filters
 - [ ] Customizable search scope
-- [ ] File preview panel
 - [ ] Plugin support (Zsh/Fish)
 
 ---

@@ -107,6 +107,14 @@ fn run_app(
                             return Ok(());
                         }
                     }
+                    KeyCode::F(2) => {
+                        if app_guard.file_type_filter.is_some() {
+                            app_guard.file_type_filter = None;
+                        } else {
+                            app_guard.file_type_filter = Some(".rs".to_string());
+                        }
+                        app_guard.mark_input_changed();
+                    }
                     _ => {}
                 }
             }
