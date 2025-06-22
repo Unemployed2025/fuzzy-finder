@@ -16,7 +16,7 @@ It provides a blazing-fast fuzzy search over your filesystem using an interactiv
 ## 🚀 Features
 
 - 🔍 Real-time fuzzy search over your entire file system
-- ⚡ Blazingly fast performance using parallelism (`rayon`)
+- ⚡ Blazingly fast performance using parallelism [`rayon`](http://crates.io/crates/rayon)
 - 🎯 Live filtering with regex-based partial matches
 - 🖥️ Minimal and responsive terminal UI built with [`ratatui`](https://crates.io/crates/ratatui)
 - 🧭 Keyboard navigation (↑/↓) and file opening (Enter)
@@ -98,12 +98,12 @@ Then:
 
 ## 🔧 Dependencies
 
-- `ratatui` – TUI rendering
-- `crossterm` – Terminal events
-- `regex` – Fuzzy matching
-- `walkdir` – Directory traversal
-- `rayon` – Parallel filtering
-- `dirs` - Home directory discovery
+- [`ratatui`](https://crates.io/crates/ratatui) – TUI rendering
+- [`crossterm`](https://crates.io/crates/crossterm) – Terminal events
+- [`regex`](https://crates.io/crates/regex) – Fuzzy matching
+- [`walkdir`](https://crates.io/crates/walkdir) – Directory traversal
+- [`rayon`](https://crates.io/crates/rayon) – Parallel filtering
+- [`dirs`](https://crates.io/crates/dirs) – Home directory discovery
 
 You can install them via:
 ```bash
